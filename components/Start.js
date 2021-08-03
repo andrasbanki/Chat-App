@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, View, Text, Button, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { ImageBackground, View, Text, KeyboardAvoidingView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 
 const backgroundImage = require('../assets/BackgroundImage.png')
 
@@ -44,11 +44,17 @@ export default class Start extends React.Component {
             </TouchableOpacity>    
           </View>
           <TouchableOpacity
-              style={styles.button}
+              style={{ 
+                backgroundColor: this.state.backgroundColor, 
+                height: 50,  
+                width: '90%',
+                justifyContent: 'center'
+              }}
               onPress={() => {
                 this.props.navigation.navigate('Chat', { name: this.state.name, backgroundColor: this.state.backgroundColor })}}>
                <Text style={styles.buttonText}>Start Chatting</Text>
           </TouchableOpacity>
+          { Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null }
         </View>
       </View>
     </ImageBackground>
@@ -73,11 +79,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
     textAlign: 'center',
+    top : 80,
   },
 
   box1: {
     flex: 55,
-    justifyContent: "space-evenly",
   },
 
   box2: {
@@ -100,6 +106,8 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     color: '#757083',
     paddingLeft: 15,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
 
   bgColorText: {
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
 
   bgColor: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
 
   color1: {
@@ -142,12 +150,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
 
-  button: {
-    height: 50,
-    width: '90%',
-    backgroundColor: '#757083',
-    justifyContent: 'center',
-  },
+  // button: {
+  //   height: 50,
+  //   width: '90%',
+  //   backgroundColor: '#757083',
+  //   justifyContent: 'center',
+  // },
 
   buttonText: {
     fontSize: 16,
