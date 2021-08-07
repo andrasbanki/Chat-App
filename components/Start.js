@@ -1,63 +1,63 @@
 import React from 'react';
-import { ImageBackground, View, Text, KeyboardAvoidingView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { ImageBackground, View, Text, TextInput, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 
 const backgroundImage = require('../assets/BackgroundImage.png')
 
 export default class Start extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      name: '' ,
+    this.state = {
+      name: '',
       backgroundColor: '#FFF'
     }
   }
 
   render() {
-    
+
     return (
-    <ImageBackground source={backgroundImage} style={styles.bgimage}>
-      <View style={styles.container}>
-        <View style={styles.box1}>
-          <Text style={styles.title}>Chat App</Text>
-        </View>
-        <View style={styles.box2}> 
-          <TextInput
-            style={styles.name}
-            onChangeText={(name) => this.setState({ name })}
-            value={this.state.name}
-            placeholder='Your name'
-          />
-          <Text style={styles.bgColorText}>Choose Background Color:</Text>
-          <View style={styles.bgColor}>
-            <TouchableOpacity style={styles.color1}
-              onPress={() => this.setState({ backgroundColor: '#090C08' })}
-            />
-            <TouchableOpacity style={styles.color2}
-              onPress={() => this.setState({ backgroundColor: '#474056' })}
-            />
-            <TouchableOpacity style={styles.color3}
-              onPress={() => this.setState({ backgroundColor: '#8A95A5' })}
-            />
-            <TouchableOpacity style={styles.color4}
-              onPress={() => this.setState({ backgroundColor: '#B9C6AE' })}>
-            <Text style={styles.buttonText}Start Chatting></Text>
-            </TouchableOpacity>    
+      <ImageBackground source={backgroundImage} style={styles.bgimage}>
+        <View style={styles.container}>
+          <View style={styles.box1}>
+            <Text style={styles.title}>Chat App</Text>
           </View>
-          <TouchableOpacity
-              style={{ 
-                backgroundColor: this.state.backgroundColor, 
-                height: 50,  
+          <View style={styles.box2}>
+            <TextInput
+              style={styles.name}
+              onChangeText={(name) => this.setState({ name })}
+              value={this.state.name}
+              placeholder='Your name'
+            />
+            <Text style={styles.bgColorText}>Choose Background Color:</Text>
+            <View style={styles.bgColor}>
+              <TouchableOpacity style={styles.color1}
+                onPress={() => this.setState({ backgroundColor: '#090C08' })}
+              />
+              <TouchableOpacity style={styles.color2}
+                onPress={() => this.setState({ backgroundColor: '#474056' })}
+              />
+              <TouchableOpacity style={styles.color3}
+                onPress={() => this.setState({ backgroundColor: '#8A95A5' })}
+              />
+              <TouchableOpacity style={styles.color4}
+                onPress={() => this.setState({ backgroundColor: '#B9C6AE' })}>
+                <Text style={styles.buttonText} Start Chatting></Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: this.state.backgroundColor,
+                height: 50,
                 width: '90%',
                 justifyContent: 'center'
               }}
               onPress={() => {
-                this.props.navigation.navigate('Chat', { name: this.state.name, backgroundColor: this.state.backgroundColor })}}>
-               <Text style={styles.buttonText}>Start Chatting</Text>
-          </TouchableOpacity>
-          { Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null }
+                this.props.navigation.navigate('Chat', { name: this.state.name, backgroundColor: this.state.backgroundColor })
+              }}>
+              <Text style={styles.buttonText}>Start Chatting</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ImageBackground>
+      </ImageBackground>
     );
   }
 }
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-  },  
+  },
 
   bgimage: {
     flex: 1,
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
     textAlign: 'center',
-    top : 80,
+    top: 80,
   },
 
   box1: {
