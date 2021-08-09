@@ -1,11 +1,38 @@
-## Objective
+# Chat App
 
-Build a chat app for mobile devices using React Native. The app will provide users with a chat interface and options to share images and their location.
+## Description
+
+This is a chat app for mobile devices using React Native. The app will provide users with a chat interface and options to share images and their location.
 
 ## Built With
 
 -   Expo
 -   React Native
+-   Node.js
+
+## Setup
+
+Install expo globally
+
+https://docs.expo.dev/get-started/installation/
+
+```
+npm install --global-cli
+```
+
+Start by cloning this repository
+
+```
+npm install
+```
+
+To start the project
+
+```
+expo start
+```
+
+Scan the QR code with Expo Go (Android) or the Camera app (iOS)
 
 ## User Stories
 

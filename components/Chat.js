@@ -1,6 +1,8 @@
-import React from 'react';
+import React from "react";
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import { View, Platform, KeyboardAvoidingView, } from 'react-native';
+import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
 
 const firebase = require('firebase');
 require('firebase/firestore');
@@ -8,19 +10,23 @@ require('firebase/firestore');
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCqg2TAXnEGT0XAoQsYVLIgVBGfXsGUxoo",
-  authDomain: "chat-app-4de57.firebaseapp.com",
-  projectId: "chat-app-4de57",
-  storageBucket: "chat-app-4de57.appspot.com",
-  messagingSenderId: "541428318015",
-  appId: "1:541428318015:web:c56d5bd278aaafbf22dd8a",
-};
-
 export default class Chat extends React.Component {
-
   constructor(props) {
     super(props);
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp({
+        apiKey: "AIzaSyCqg2TAXnEGT0XAoQsYVLIgVBGfXsGUxoo",
+        authDomain: "chat-app-4de57.firebaseapp.com",
+        projectId: "chat-app-4de57",
+        storageBucket: "chat-app-4de57.appspot.com",
+        messagingSenderId: "541428318015",
+        appId: "1:541428318015:web:c56d5bd278aaafbf22dd8a",
+      });
+    } 
+
+    this.referenceChatMessages = firebase.firestore().collection('messages');
+
     this.state = {
       messages: [],
       uid: 0,
@@ -31,12 +37,9 @@ export default class Chat extends React.Component {
       },
       isConnected: false,
       backgroundColor: this.props.route.params.backgroundColor,
-    };
-
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    this.referenceChatMessages = firebase.firestore().collection('messages');
+      image: null,
+      location: null, 
+    };    
   }
 
   componentDidMount() {
@@ -77,7 +80,7 @@ export default class Chat extends React.Component {
     this.unsubscribe();
   }
 
-  async getMessages() {
+  getMessages = async () => {
     let messages = '';
     try {
       messages = (await AsyncStorage.getItem('messages')) || [];
@@ -89,7 +92,7 @@ export default class Chat extends React.Component {
     }
   };
 
-  async saveMessages() {
+  saveMessages = async () => {
     try {
       await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));      
     } catch (error) {
@@ -97,7 +100,7 @@ export default class Chat extends React.Component {
     }
   }
 
-  async deleteMessages() {
+  deleteMessages = async () => {
     try {
       await AsyncStorage.removeItem('messages');
       this.setState({
@@ -115,8 +118,10 @@ export default class Chat extends React.Component {
       _id: message._id,
       uid: this.state.uid,
       createdAt: message.createdAt,
-      text: message.text || null,
+      text: message.text || '',
       user: message.user,
+      image: message.image || null,
+      location: message.location || null
     });
   }
 
@@ -128,9 +133,15 @@ export default class Chat extends React.Component {
       let data = doc.data();
       messages.push({
         _id: data._id,
-        text: data.text,
+        text: data.text || '',
         createdAt: data.createdAt.toDate(),
-        user: data.user,
+        user: {
+          _id: data.user._id,
+          name: data.user.name,
+          avatar: data.user.avatar,
+        },
+        image: data.image || null,
+        location: data.location || null,
       });
     });
     this.setState({
@@ -138,7 +149,7 @@ export default class Chat extends React.Component {
     })
   };
 
-  onSend(messages = []) {
+  onSend = (messages = []) => {
     this.setState(
       previousState => ({
         messages: GiftedChat.append(previousState.messages, messages),
@@ -167,10 +178,33 @@ export default class Chat extends React.Component {
   renderInputToolbar = props => {
     if (this.state.isConnected === false) {
     } else {
-      return (
-        <InputToolbar {...props} />
-      )
+      return <InputToolbar {...props} />;
     }
+  };
+
+  renderCustomActions = (props) => {
+    return <CustomActions {...props} />;
+  };
+
+  renderCustomView (props) {
+    const { currentMessage} = props;
+    if (currentMessage.location) {
+      return (
+          <MapView
+            style={{width: 150,
+              height: 100,
+              borderRadius: 13,
+              margin: 3}}
+            region={{
+              latitude: currentMessage.location.latitude,
+              longitude: currentMessage.location.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+          />
+      );
+    }
+    return null;
   }
 
   render() {
@@ -179,11 +213,11 @@ export default class Chat extends React.Component {
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
           renderInputToolbar={this.renderInputToolbar}
+          renderActions={this.renderCustomActions}
+          renderCustomView={this.renderCustomView}
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
-          user={{
-            _id: 1,
-          }}
+          user={this.state.user}
         />
         { Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
       </View>
