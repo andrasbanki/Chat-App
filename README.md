@@ -1,5 +1,7 @@
 # Chat App
 
+![Screenshot](https://github.com/andrasbanki/Chat-App/raw/main/assets/chatApp.png)
+
 ## Description
 
 This is a chat app for mobile devices using React Native. The app will provide users with a chat interface and options to share images and their location.
